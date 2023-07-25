@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
@@ -151,6 +151,11 @@ export default function Home() {
   const [phone, setPhone] = useState('');
   const [experiences, setExperiences] = useState<WorkExperience[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const addExperience = () => {
     setExperiences([...experiences, { company: '', jobTitle: '', date: '', description: '' }]);
@@ -163,6 +168,10 @@ export default function Home() {
   const pdfExportRef = useRef(null);
 
   const handleExportToPDF = () => {
+    if (!isClient) {
+      return;
+    }
+
     const element = pdfExportRef.current;
     if (!element) return;
 
@@ -174,7 +183,10 @@ export default function Home() {
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
     };
 
-    html2pdf().from(element).set(opt).save();
+    import('html2pdf.js').then((html2pdfModule) => {
+      const html2pdf = html2pdfModule.default || html2pdfModule;
+      html2pdf().from(element).set(opt).save();
+    });
   };
 
   const [selectedStyle, setSelectedStyle] = useState(1);
