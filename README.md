@@ -1,34 +1,49 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CV Generator - React.js with MUI
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+CV Generator is a simple web application built using React.js and MUI (Material-UI) that allows users to create their Curriculum Vitae (CV) with three different styles and the option to export it as a PDF file.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Create and customize your CV easily.
+- Choose from three different CV styles.
+- Real-time preview of the CV.
+- Export the CV as a PDF file.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Installation
 
-## Learn More
+1. Clone the repository:
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`git clone https://github.com/your-username/cv-generator.git`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+2. Navigate to the project directory:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`cd cv-generator`
+
+
+3. Install the required dependencies:
+
+
+`npm install`
+
+
+## Usage
+
+To start the development server and run the application, use the following command:
+
+
+`npm start`
+
+
+The application will be available at `http://localhost:3000` in your web browser.
+
+## Exporting as PDF
+
+Once you have customized your CV, you can export it as a PDF file. Click on the "Export" button located in the CV Generator's toolbar. The PDF file will be downloaded to your device.
+
+

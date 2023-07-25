@@ -1,113 +1,381 @@
-import Image from 'next/image'
+'use client'
+import React, { useState, useRef } from 'react';
+import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import html2pdf from 'html2pdf.js';
+
+
+interface WorkExperience {
+  company: string;
+  jobTitle: string;
+  date: string;
+  description: string;
+}
+
+interface Education {
+  school: string;
+  date: string;
+  degree: string;
+  gpa: string;
+  additionalInfo: string;
+}
+
+const CvContent = ({
+  name,
+  email,
+  phone,
+  experiences,
+  educations,
+  fontFamily,
+}: {
+  name: string;
+  email: string;
+  phone: string;
+  experiences: WorkExperience[];
+  educations: Education[];
+  fontFamily: string;
+}) => {
+  return (
+    <Box p={2}>
+      <Box mb={4} textAlign="center">
+        <Typography variant="h4">CV</Typography>
+      </Box>
+      <Box my={2}>
+        <Typography variant="h5" align="center">
+          Personal Information
+        </Typography>
+        <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
+          <AccountCircleIcon fontSize="large" />
+          <Typography variant="h6" style={{ marginLeft: '8px' }}>
+            {name}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
+          <EmailIcon fontSize="large" />
+          <Typography variant="h6" style={{ marginLeft: '8px' }}>
+            {email}
+          </Typography>
+        </Box>
+        <Box display="flex" alignItems="center" justifyContent="center" mt={1}>
+          <PhoneIcon fontSize="large" />
+          <Typography variant="h6" style={{ marginLeft: '8px' }}>
+            {phone}
+          </Typography>
+        </Box>
+      </Box>
+      <Box my={2}>
+
+        <Typography variant="h6"><WorkIcon />Work Experience</Typography>
+        {experiences.map((experience, index) => (
+          <Box key={index} mt={2} p={2} border={1} borderColor="grey.300" borderRadius={4}>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Company: {experience.company}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Job Title: {experience.jobTitle}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Date: {experience.date}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Description: {experience.description}
+              </Typography>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+      <Box my={2}>
+        <Typography variant="h6"> <SchoolIcon />Education</Typography>
+        {educations.map((education, index) => (
+          <Box key={index} mt={2} p={2} border={1} borderColor="grey.300" borderRadius={4}>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                School: {education.school}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Date: {education.date}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Degree: {education.degree}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                GPA: {education.gpa}
+              </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" mb={1}>
+
+              <Typography variant="body2" fontWeight="bold" ml={1}>
+                Additional Information: {education.additionalInfo}
+              </Typography>
+            </Box>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+};
 
 export default function Home() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [experiences, setExperiences] = useState<WorkExperience[]>([]);
+  const [educations, setEducations] = useState<Education[]>([]);
+
+  const addExperience = () => {
+    setExperiences([...experiences, { company: '', jobTitle: '', date: '', description: '' }]);
+  };
+
+  const addEducation = () => {
+    setEducations([...educations, { school: '', date: '', degree: '', gpa: '', additionalInfo: '' }]);
+  };
+
+  const pdfExportRef = useRef(null);
+
+  const handleExportToPDF = () => {
+    const element = pdfExportRef.current;
+    if (!element) return;
+
+    const opt = {
+      margin: 10,
+      filename: 'my_cv.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+
+    html2pdf().from(element).set(opt).save();
+  };
+
+  const [selectedStyle, setSelectedStyle] = useState(1);
+
+  const styles = [
+    {
+      backgroundColor: '#f5f5f5',
+      color: 'black',
+      padding: '1rem',
+      fontFamily: 'Arial, sans-serif',
+    },
+    {
+      backgroundColor: '#CCFFE5',
+      color: 'black',
+      padding: '1rem',
+      fontFamily: 'Verdana, sans-serif',
+    },
+    {
+      backgroundColor: '#63A5E8',
+      color: 'black',
+      padding: '1rem',
+      fontFamily: 'Helvetica, sans-serif',
+    },
+  ];
+
+  const getSelectedStyle = () => {
+    return styles[selectedStyle - 1];
+  };
+
+  const handleExperienceChange = (
+    index: number,
+    field: keyof WorkExperience,
+    value: string
+  ) => {
+    const newExperiences = [...experiences];
+    newExperiences[index][field] = value;
+    setExperiences(newExperiences);
+  };
+
+  const handleEducationChange = (
+    index: number,
+    field: keyof Education,
+    value: string
+  ) => {
+    const newEducations = [...educations];
+    newEducations[index][field] = value;
+    setEducations(newEducations);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Grid container spacing={2} pl={6} pt={6}>
+      <Grid item xs={12} sm={6}>
+        <Box p={2} border={1} borderColor="grey.300" borderRadius={4}>
+          <Typography variant="h5">Personal Information</Typography>
+          <TextField
+            label="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            label="Phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </Box>
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+        <Box p={2} border={1} borderColor="grey.300" borderRadius={4} mt={2}>
+          <Typography variant="h6">Work Experience</Typography>
+          {experiences.map((experience, index) => (
+            <Box key={index} mt={index > 0 ? 2 : 0}>
+              <TextField
+                label="Company"
+                value={experience.company}
+                onChange={(e) => handleExperienceChange(index, 'company', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Job Title"
+                value={experience.jobTitle}
+                onChange={(e) => handleExperienceChange(index, 'jobTitle', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Date"
+                value={experience.date}
+                onChange={(e) => handleExperienceChange(index, 'date', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Description"
+                value={experience.description}
+                onChange={(e) => handleExperienceChange(index, 'description', e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+              />
+            </Box>
+          ))}
+          <Button color="secondary" onClick={addExperience}>
+            + Add Experience
+          </Button>
+        </Box>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
+        <Box p={2} border={1} borderColor="grey.300" borderRadius={4} mt={2}>
+          <Typography variant="h6">Education</Typography>
+          {educations.map((education, index) => (
+            <Box key={index} mt={index > 0 ? 2 : 0}>
+              <TextField
+                label="School"
+                value={education.school}
+                onChange={(e) => handleEducationChange(index, 'school', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Date"
+                value={education.date}
+                onChange={(e) => handleEducationChange(index, 'date', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Degree"
+                value={education.degree}
+                onChange={(e) => handleEducationChange(index, 'degree', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="GPA"
+                value={education.gpa}
+                onChange={(e) => handleEducationChange(index, 'gpa', e.target.value)}
+                fullWidth
+                margin="normal"
+              />
+              <TextField
+                label="Additional Information"
+                value={education.additionalInfo}
+                onChange={(e) => handleEducationChange(index, 'additionalInfo', e.target.value)}
+                fullWidth
+                margin="normal"
+                multiline
+                rows={4}
+              />
+            </Box>
+          ))}
+          <Button color="secondary" onClick={addEducation}>
+            + Add Education
+          </Button>
+        </Box>
+        <Button color="primary" onClick={() => setSelectedStyle(1)}>
+          Style One
+        </Button>
+        <Button color="primary" onClick={() => setSelectedStyle(2)}>
+          Style Two
+        </Button>
+        <Button color="primary" onClick={() => setSelectedStyle(3)}>
+          Style Three
+        </Button>
+        <Button color="primary" onClick={handleExportToPDF}>
+          Export to PDF
+        </Button>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <Paper
+          elevation={3}
+          ref={pdfExportRef}
+          style={{
+            backgroundColor: getSelectedStyle().backgroundColor,
+            color: getSelectedStyle().color,
+            padding: '1rem',
+            fontFamily: getSelectedStyle().fontFamily,
+            margin: '1rem',
+          }}
         >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+          <CvContent
+            name={name}
+            email={email}
+            phone={phone}
+            experiences={experiences}
+            educations={educations}
+            fontFamily={styles[selectedStyle - 1].fontFamily}
+          />
+        </Paper>
+      </Grid>
+    </Grid>
+  );
 }
