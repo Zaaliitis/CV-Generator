@@ -3,7 +3,7 @@
 ## Introduction
 
 CV Generator is a simple web application built using React.js and MUI (Material-UI) that allows users to create their Curriculum Vitae (CV) with three different styles and the option to export it as a PDF file.
-You can check it out here: https://cv-generator-bqky.vercel.app/
+You can check it out here: https://cv-generator-one.vercel.app/
 
 ## Features
 
